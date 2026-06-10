@@ -1,29 +1,50 @@
 # ctmkit
 
-A Control-M library + CLI for Jobs-as-Code GitOps: deploy descriptors, site-standard
-validation, safe ordered deploys, KPIs, and an MCP door for AI agents. Published to
-Artifactory and consumed by the `orchestration-manifests` GitHub Actions.
+A Control-M library + CLI for Jobs-as-Code GitOps: site-standard validation, Automation-API
+build/deploy/transform, ordered deploys, deploy-descriptor promotion/retrofit, a documentation
+crawler with change reporting, and an MCP door for AI agents. Published to Artifactory and
+consumed by the `orchestration-manifests` GitHub Actions.
 
-> Design: see `orchestration-manifests/docs/2026-06-10-control-m-gitops-design.md`.
-> This repo currently lands the first slice — the **BMC docs mirror**.
+> Design: `orchestration-manifests/docs/2026-06-10-control-m-gitops-design.md`.
 
-## Docs mirror
+## CLI — `ctmkit <surface> <verb> --options`
 
-BMC's documentation sits behind a Cloudflare challenge on several spaces. `ctmkit.docs`
-defeats it with `curl_cffi` browser impersonation (real Chrome TLS fingerprint — no
-headless browser needed) and converts each page to clean markdown.
+kubectl/gh-style surfaces with Rich output. Endpoints resolve from `--env` via
+`config/environments.yaml` (`development` / `staging` / `production` / our private `lab`);
+`--endpoint` overrides. API key comes from `$CTM_API_KEY` (HashiCorp Vault).
 
 ```bash
 uv sync
-uv run ctmkit-docs --out docs/reference/bmc           # gather the curated set
+uv run ctmkit --help
+
+# validate manifests (JSON schema + nomenclature / site standard)
+uv run ctmkit manifests validate --path /path/to/orchestration-manifests
+
+# Automation API
+export CTM_API_KEY=…
+uv run ctmkit session login --env lab   --path /path/to/orchestration-manifests
+uv run ctmkit build   run   --file …/0225_X.json --env lab --path …
+uv run ctmkit deploy  plan  --app 0225 --env development --path …       # no network
+uv run ctmkit deploy  run   --app 0225 --env lab --path … [--dry-run]
+uv run ctmkit promote run   --app 0225 --from-env development --to-env staging --path …
+
+# documentation mirror (crawl + hash-diff change report)
+uv run ctmkit docs crawl --out docs/reference
 ```
 
-Edit `src/ctmkit/docs/sources.yaml` to add pages/seeds. A scheduled workflow
-(`.github/workflows/refresh-docs.yml`) refreshes the mirror periodically.
+## Architecture (modular, no god scripts)
+
+- `ctmkit/aapi/` — typed client over the AAPI REST services (`session`, `build`, `deploy`,
+  `transform`) on an injectable `httpx` client.
+- `ctmkit/deploy/ordered.py` — ordered, one-file-at-a-time, fail-fast tree deploy.
+- `ctmkit/promote/` — deploy-descriptor promotion / retrofit.
+- `ctmkit/cli/` — one Typer sub-app per surface; shared Rich output in `cli/_console.py`.
+- `ctmkit/docs/` — Cloudflare-clearing crawler (`curl_cffi`), content-only cleaner, and a
+  content-hash index (`.doc-index.json`) + `CHANGELOG.md` "what changed" report.
 
 ## Develop
 
 ```bash
 uv sync
-uv run pytest          # unit tests (no network)
+uv run pytest          # every test is offline (httpx MockTransport / fixtures)
 ```

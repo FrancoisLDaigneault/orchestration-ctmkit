@@ -24,8 +24,8 @@ jobs:
       - name: Sync deps
         run: uv sync --frozen
 
-      - name: Mirror docs
-        run: uv run ctmkit-docs --out docs/reference/bmc
+      - name: Refresh docs (crawl + hash-diff report)
+        run: uv run ctmkit docs crawl --out docs/reference
 
       - name: Open PR on change
         uses: peter-evans/create-pull-request@v6
@@ -33,5 +33,5 @@ jobs:
           branch: chore/refresh-bmc-docs
           title: "chore: refresh BMC Control-M docs mirror"
           commit-message: "chore: refresh BMC Control-M docs mirror"
-          body: "Automated weekly refresh of the BMC docs mirror via `ctmkit-docs`."
-          add-paths: docs/reference/bmc
+          body: "Automated weekly refresh via `ctmkit docs crawl` (see docs/reference/CHANGELOG.md)."
+          add-paths: docs/reference

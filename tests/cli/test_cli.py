@@ -6,23 +6,24 @@ from typer.testing import CliRunner
 from ctmkit.cli import app
 
 runner = CliRunner()
-FIX = Path(__file__).parent / "fixtures"
+FIX = Path(__file__).parents[1] / "fixtures"
 
 
-def test_cli_has_validate_command():
+def test_root_help_lists_surfaces():
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "validate" in result.output
+    for surface in ("manifests", "session", "build", "deploy", "promote", "docs"):
+        assert surface in result.output
 
 
-def test_validate_command_passes_on_good_tree(tmp_path):
+def test_manifests_validate_ok(tmp_path):
     p = tmp_path / "control-m/0225/development/calendars/0225_HOLYDAY.json"
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps({"0225_HOLYDAY": {"Type": "Calendar"}}))
     result = runner.invoke(app, [
-        "validate", str(tmp_path),
+        "manifests", "validate", "--path", str(tmp_path),
         "--site-standard", str(FIX / "site-standard.yaml"),
         "--schemas", str(FIX / "schemas"),
     ])
     assert result.exit_code == 0
-    assert "OK" in result.output
+    assert "valid" in result.output.lower()
