@@ -27,4 +27,4 @@ def login(
         success(f"reachable: {session.endpoint} (HTTP {resp.status_code})")
     except httpx.HTTPError as exc:
         failure(f"unreachable: {exc}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None

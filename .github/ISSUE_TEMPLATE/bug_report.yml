@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a defect in ctmkit
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, plus what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Commands (e.g. `ctmkit deploy run ...`) and inputs.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ctmkit version / commit
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output
+      render: shell
