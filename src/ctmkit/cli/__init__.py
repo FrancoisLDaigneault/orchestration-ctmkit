@@ -7,7 +7,17 @@ from __future__ import annotations
 
 import typer
 
-from ctmkit.cli import approval, build, deploy, events, manifests, mcp, promote, session
+from ctmkit.cli import (
+    approval,
+    build,
+    deploy,
+    docs,
+    events,
+    manifests,
+    mcp,
+    promote,
+    session,
+)
 
 app = typer.Typer(no_args_is_help=True, help="Control-M GitOps toolkit.")
 app.add_typer(manifests.app, name="manifests")
@@ -18,3 +28,4 @@ app.add_typer(promote.app, name="promote")
 app.add_typer(approval.app, name="approval")
 app.add_typer(events.app, name="events")
 app.add_typer(mcp.app, name="mcp")
+app.add_typer(docs.app, name="docs")
