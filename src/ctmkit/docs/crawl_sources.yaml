@@ -15,7 +15,12 @@ spaces:
   - name: "K8S"
     index: https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/K8S_Overview.htm
     allow_prefix: https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/
-
+  - name: "Best Practices for performance tuning of Control-M/Server "
+    index: https://bmcapps.my.site.com/casemgmt/sc_KnowledgeArticle?sfdcid=000382208
+  - name: "Best Practices for Control-M/Enterprise Manager"
+    index:  https://bmcapps.my.site.com/casemgmt/sc_KnowledgeArticle?sfdcid=000382207
+  - name: "Best Practices - Maintenance utilities for Control-M"
+    index: https://community.bmc.com/s/article/Best-Practices-Maintenance-utilities-for-Control-M  
 repos:
   - https://github.com/controlm/ctm-python-client
   - https://github.com/controlm/ctm-kubernetes

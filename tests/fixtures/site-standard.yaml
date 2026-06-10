@@ -1,0 +1,6 @@
+distributed_letter: "D"
+app_ids: ["0225", "4007"]
+environments:
+  development: { token: "DEV", server: "CTMDEV" }
+  staging:     { token: "STG", server: "CTMSTG" }
+  production:  { token: "PRD", server: "CTMPRD" }
