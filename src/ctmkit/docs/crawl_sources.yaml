@@ -1,0 +1,25 @@
+# Full-site crawl sources. Each space is BFS-crawled within its allow_prefix only
+# (external/unrelated links are never followed). GitHub repos are cloned and their
+# doc files ingested. Tune max_pages_per_space / delay as needed.
+impersonate: chrome124
+delay_seconds: 0.5
+max_pages_per_space: 2000
+
+spaces:
+  - name: "9.0.22"
+    index: https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/Introduction_to.htm
+    allow_prefix: https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/
+  - name: "API"
+    index: https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/API_Intro.htm
+    allow_prefix: https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/
+  - name: "K8S"
+    index: https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/K8S_Overview.htm
+    allow_prefix: https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/
+
+repos:
+  - https://github.com/controlm/ctm-python-client
+  - https://github.com/controlm/ctm-kubernetes
+  - https://github.com/controlm/workbench
+
+files:
+  - https://github.com/controlm/automation-api-community-solutions/blob/master/4-ai-job-type-examples/ssh-key-orchestration/README.md

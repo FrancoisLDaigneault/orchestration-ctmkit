@@ -1,0 +1,37 @@
+name: refresh-bmc-docs
+
+# Periodically gather the BMC Control-M docs mirror and open a PR if anything changed.
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays 06:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync deps
+        run: uv sync --frozen
+
+      - name: Mirror docs
+        run: uv run ctmkit-docs --out docs/reference/bmc
+
+      - name: Open PR on change
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/refresh-bmc-docs
+          title: "chore: refresh BMC Control-M docs mirror"
+          commit-message: "chore: refresh BMC Control-M docs mirror"
+          body: "Automated weekly refresh of the BMC docs mirror via `ctmkit-docs`."
+          add-paths: docs/reference/bmc

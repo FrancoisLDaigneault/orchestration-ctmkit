@@ -1,0 +1,27 @@
+# Curated BMC Control-M docs to mirror. Explicit pages are always fetched; seeds
+# are crawled one hop within allow_prefixes, up to max_pages. Tune freely.
+impersonate: chrome124
+max_pages: 60
+delay_seconds: 1.0
+
+allow_prefixes:
+  - https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/
+  - https://documents.bmc.com/supportu/controlm-saas/en-US/Documentation/
+  - https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/
+  - https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/
+
+# Confirmed-reachable, high-value pages (always mirrored)
+pages:
+  - https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/API_Intro.htm
+  - https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/API_DeployDescriptor.htm
+  - https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/API_Tutorials_Automating_Code_Deployment.htm
+  - https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/MCP_Server.htm
+  - https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/K8S_Overview.htm
+  - https://documents.bmc.com/supportu/controlm-saas/en-US/Documentation/Control-M_for_Event-Driven_Workflows.htm
+  - https://documents.bmc.com/supportu/controlm-saas/en-US/Documentation/Integrations_Main.htm
+
+# Crawl roots — discover the Services, Code Reference, Site Standards, Build/Deploy
+# sibling pages without hardcoding every URL.
+seeds:
+  - https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/API_Intro.htm
+  - https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/API_DeployDescriptor.htm
