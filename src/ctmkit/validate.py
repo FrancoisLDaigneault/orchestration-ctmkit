@@ -14,7 +14,7 @@ from ctmkit.config import load_site_standard
 from ctmkit.naming import expected_name, validate_name
 from ctmkit.schema import KNOWN_KINDS, validate_object
 
-_ENV_DIRS = {"development", "staging", "production"}
+_ENV_DIRS = {"development", "staging", "production", "lab"}
 _SKIP_KINDS = {"deploy_descriptor"}
 
 

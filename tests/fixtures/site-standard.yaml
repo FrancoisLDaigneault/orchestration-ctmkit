@@ -4,3 +4,4 @@ environments:
   development: { token: "DEV", server: "CTMDEV" }
   staging:     { token: "STG", server: "CTMSTG" }
   production:  { token: "PRD", server: "CTMPRD" }
+  lab:         { token: "LAB", server: "CTMLAB" }
