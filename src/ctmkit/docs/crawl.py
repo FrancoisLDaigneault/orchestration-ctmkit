@@ -22,6 +22,7 @@ from pathlib import Path
 import yaml
 
 from ctmkit.docs.clean import clean_markdown
+from ctmkit.docs.index import diff_and_update, write_changelog
 from ctmkit.docs.mirror import extract_links, html_to_markdown
 
 DEFAULT_SOURCES = Path(__file__).with_name("crawl_sources.yaml")
@@ -167,11 +168,39 @@ def ingest_file(sess, url: str, out_dir: Path) -> bool:
         return False
 
 
+def ingest_article(sess, name: str, url: str, out_dir: Path) -> str:
+    """Fetch one documentation article and save it as cleaned markdown.
+
+    Args:
+        sess: HTTP session.
+        name: Output stem under ``bmc/`` (may include subdirs).
+        url: Article URL.
+        out_dir: Reference root.
+
+    Returns:
+        ``"ok"``, ``"js-gated (needs a browser)"``, or a ``"FAIL ..."`` string.
+    """
+    try:
+        r = sess.get(url, timeout=60)
+        if r.status_code != 200 or "Just a moment" in r.text:
+            return f"FAIL (HTTP {r.status_code})"
+        body = clean_markdown(html_to_markdown(r.text))
+        if len(body) < 200:
+            return "js-gated (needs a browser)"
+        dest = out_dir / "bmc" / f"{name}.md"
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(f"<!-- source: {url} -->\n\n{body}", encoding="utf-8")
+        return "ok"
+    except Exception as exc:  # noqa: BLE001
+        return f"FAIL ({str(exc)[:40]})"
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Crawl BMC docs + Control-M GitHub repos.")
     ap.add_argument("--sources", type=Path, default=DEFAULT_SOURCES)
     ap.add_argument("--out", type=Path, default=Path("docs/reference"))
-    ap.add_argument("--only", choices=["bmc", "github"], help="limit to one source kind")
+    ap.add_argument("--only", choices=["bmc", "github", "articles", "index"],
+                    help="limit to one source kind")
     ap.add_argument("--max", type=int, help="override max pages per space (for bounded runs)")
     args = ap.parse_args(argv)
 
@@ -181,7 +210,7 @@ def main(argv: list[str] | None = None) -> int:
     max_pages = args.max or int(cfg.get("max_pages_per_space", 2000))
     args.out.mkdir(parents=True, exist_ok=True)
 
-    if args.only != "github":
+    if args.only in (None, "bmc"):
         for sp in cfg.get("spaces", []):
             print(f"\n=== crawl {sp['name']} ===", flush=True)
             rows = crawl_space(sess, sp["name"], sp["index"], sp["allow_prefix"],
@@ -189,12 +218,24 @@ def main(argv: list[str] | None = None) -> int:
             ok = sum(1 for _, s in rows if s == "ok")
             print(f"  {sp['name']}: {ok}/{len(rows)} pages", flush=True)
 
-    if args.only != "bmc":
+    if args.only in (None, "github"):
         print("\n=== github repos ===", flush=True)
         for repo in cfg.get("repos", []):
             print(f"  {repo}: {ingest_repo(repo, args.out)} doc files", flush=True)
         for f in cfg.get("files", []):
             print(f"  file {f}: {'ok' if ingest_file(sess, f, args.out) else 'FAIL'}", flush=True)
+
+    if args.only in (None, "articles"):
+        print("\n=== articles ===", flush=True)
+        for art in cfg.get("articles", []):
+            print(f"  {art['name']}: {ingest_article(sess, art['name'], art['url'], args.out)}",
+                  flush=True)
+
+    # refresh the content-hash index + change report on every run
+    changes = diff_and_update(args.out)
+    write_changelog(args.out, changes)
+    print(f"\ndoc changes: +{len(changes.added)} ~{len(changes.changed)} "
+          f"-{len(changes.removed)} ({changes.unchanged} unchanged)", flush=True)
     return 0
 
 

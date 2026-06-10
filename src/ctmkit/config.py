@@ -34,3 +34,45 @@ def load_site_standard(path: Path) -> SiteStandard:
         app_ids=[str(a) for a in data["app_ids"]],
         environments=envs,
     )
+
+
+@dataclass(frozen=True)
+class EnvEndpoint:
+    """An Automation API endpoint for one environment.
+
+    Attributes:
+        endpoint: Base AAPI URL.
+        timezone: IANA timezone of the Control-M environment.
+    """
+
+    endpoint: str
+    timezone: str = "UTC"
+
+
+def load_environments(path: Path) -> dict[str, EnvEndpoint]:
+    """Load per-environment AAPI endpoints from ``environments.yaml``.
+
+    Args:
+        path: Path to ``environments.yaml``.
+
+    Returns:
+        Mapping of environment name to :class:`EnvEndpoint`.
+    """
+    data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    return {
+        name: EnvEndpoint(endpoint=cfg["endpoint"], timezone=cfg.get("timezone", "UTC"))
+        for name, cfg in data.items()
+    }
+
+
+def load_deploy_order(path: Path) -> list[str]:
+    """Load the ordered list of object-kind phases for deployment.
+
+    Args:
+        path: Path to ``deploy-order.yaml``.
+
+    Returns:
+        The phase names in deploy order.
+    """
+    data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    return list(data["phases"])

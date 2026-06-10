@@ -29,6 +29,27 @@ _DATE_FOOTER = re.compile(
 # trailing junk: cut the page here if we hit one of these markers on its own line
 _CUT_AFTER = re.compile(r"(?i)^\s*(related (topics|information)|parent topic|©|copyright)\b")
 
+# element blocks whose *content* must be removed before any markdown conversion
+_HTML_NOISE = re.compile(
+    r"(?is)<(script|style|noscript|head|svg|template|iframe)\b[^>]*>.*?</\1\s*>"
+)
+
+
+def strip_html_blocks(html: str) -> str:
+    """Remove script/style/head/svg/iframe element blocks, content included.
+
+    ``markdownify``'s ``strip`` only unwraps tags (keeping their inner text), which
+    leaks JS/CSS into the output for non-WebHelp pages. Deleting the blocks first
+    guarantees a content-only conversion.
+
+    Args:
+        html: Raw HTML.
+
+    Returns:
+        HTML with noise element blocks removed.
+    """
+    return _HTML_NOISE.sub(" ", html)
+
 
 def strip_invisible(text: str) -> str:
     text = text.translate(_INVISIBLE).replace(" ", " ")
