@@ -1,0 +1,36 @@
+# Crawl sources. `spaces` are BFS-crawled within their allow_prefix only (external links
+# never followed). `repos` are cloned + doc files ingested. `files` are single GitHub docs.
+# `articles` are single doc pages (KB / best-practices). Every run refreshes a content-hash
+# index (.doc-index.json) and prepends what changed to CHANGELOG.md.
+impersonate: chrome124
+delay_seconds: 0.5
+max_pages_per_space: 2000
+
+spaces:
+  - name: "9.0.22"
+    index: https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/Introduction_to.htm
+    allow_prefix: https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/
+  - name: "API"
+    index: https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/API_Intro.htm
+    allow_prefix: https://documents.bmc.com/supportu/API/Monthly/en-US/Documentation/
+  - name: "K8S"
+    index: https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/K8S_Overview.htm
+    allow_prefix: https://documents.bmc.com/supportu/K8S/9.0.22.100/en-US/Documentation/
+
+repos:
+  - https://github.com/controlm/ctm-python-client
+  - https://github.com/controlm/ctm-kubernetes
+  - https://github.com/controlm/workbench
+
+files:
+  - https://github.com/controlm/automation-api-community-solutions/blob/master/4-ai-job-type-examples/ssh-key-orchestration/README.md
+
+# Single best-practice / KB articles. The community.bmc.com one is Salesforce Experience
+# Cloud (JS-only) -> reported 'js-gated'; the official Server/EM Utilities docs below cover
+# the same maintenance-utilities content and ARE fetchable.
+articles:
+  - { name: best-practices/controlm-server-performance-tuning,      url: "https://bmcapps.my.site.com/casemgmt/sc_KnowledgeArticle?sfdcid=000382208" }
+  - { name: best-practices/enterprise-manager-performance-tuning,   url: "https://bmcapps.my.site.com/casemgmt/sc_KnowledgeArticle?sfdcid=000382207" }
+  - { name: best-practices/maintenance-utilities-controlm-server,    url: "https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/Server_Utils.htm" }
+  - { name: best-practices/maintenance-utilities-enterprise-manager, url: "https://documents.bmc.com/supportu/9.0.22/en-US/Documentation/EM_Utils.htm" }
+  - { name: best-practices/maintenance-utilities-community,          url: "https://community.bmc.com/s/article/Best-Practices-Maintenance-utilities-for-Control-M" }

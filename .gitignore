@@ -5,3 +5,7 @@ dist/
 build/
 .pytest_cache/
 .ruff_cache/
+
+# Mirrored vendor docs (BMC) — kept LOCAL only: copyright + GitHub secret-scanning.
+# Regenerate with: uv run ctmkit docs crawl --out docs/reference
+docs/reference/
