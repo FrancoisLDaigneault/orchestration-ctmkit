@@ -12,7 +12,7 @@ FIX = Path(__file__).parents[1] / "fixtures"
 def test_root_help_lists_surfaces():
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    for surface in ("manifests", "session", "build", "deploy", "promote"):
+    for surface in ("manifests", "session", "build", "deploy", "promote", "approval"):
         assert surface in result.output
 
 
