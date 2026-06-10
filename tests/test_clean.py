@@ -43,3 +43,10 @@ def test_chrome_links_are_removed():
     out = clean.clean_markdown("# T\n\n[Skip To Main Content](#)\n\nBody.\n")
     assert "Skip To Main Content" not in out
     assert "Body." in out
+
+
+def test_strip_html_blocks_removes_script_and_style_content():
+    html = "<style>.x{color:red}</style><p>Keep me</p><script>var a=1;NetworkTracking.init()</script>"
+    out = clean.strip_html_blocks(html)
+    assert "Keep me" in out
+    assert "color:red" not in out and "NetworkTracking" not in out

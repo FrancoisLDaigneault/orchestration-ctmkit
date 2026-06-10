@@ -61,6 +61,9 @@ def html_to_markdown(html: str) -> str:
     """Convert a BMC WebHelp page to markdown, trimming nav chrome."""
     from markdownify import markdownify as md  # local import: optional at test time
 
+    from ctmkit.docs.clean import strip_html_blocks
+
+    html = strip_html_blocks(html)  # delete script/style/head content, not just unwrap
     i = html.find("You are here")
     body = html[i:] if i != -1 else html
     text = md(body, heading_style="ATX", strip=["script", "style", "nav"])
