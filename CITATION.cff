@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use ctmkit, please cite it as below."
+title: "ctmkit — Control-M GitOps toolkit"
+abstract: >-
+  A modular Python library and CLI for Control-M Jobs-as-Code GitOps: Automation API
+  build/deploy/transform, ordered deploys, deploy-descriptor promotion, and site-standard
+  validation.
+type: software
+authors:
+  - family-names: "Daigneault"
+    given-names: "François"
+version: 0.0.1
+date-released: 2026-06-10
+keywords:
+  - control-m
+  - gitops
+  - automation-api
+  - devops

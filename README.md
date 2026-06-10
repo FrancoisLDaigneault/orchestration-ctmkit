@@ -1,9 +1,8 @@
 # ctmkit
 
 A Control-M library + CLI for Jobs-as-Code GitOps: site-standard validation, Automation-API
-build/deploy/transform, ordered deploys, deploy-descriptor promotion/retrofit, a documentation
-crawler with change reporting, and an MCP door for AI agents. Published to Artifactory and
-consumed by the `orchestration-manifests` GitHub Actions.
+build/deploy/transform, ordered deploys, deploy-descriptor promotion/retrofit, and an MCP door
+for AI agents. Published to Artifactory and consumed by the `orchestration-manifests` GitHub Actions.
 
 > Design: `orchestration-manifests/docs/2026-06-10-control-m-gitops-design.md`.
 
@@ -27,9 +26,6 @@ uv run ctmkit build   run   --file …/0225_X.json --env lab --path …
 uv run ctmkit deploy  plan  --app 0225 --env development --path …       # no network
 uv run ctmkit deploy  run   --app 0225 --env lab --path … [--dry-run]
 uv run ctmkit promote run   --app 0225 --from-env development --to-env staging --path …
-
-# documentation mirror (crawl + hash-diff change report)
-uv run ctmkit docs crawl --out docs/reference
 ```
 
 ## Architecture (modular, no god scripts)
@@ -39,8 +35,6 @@ uv run ctmkit docs crawl --out docs/reference
 - `ctmkit/deploy/ordered.py` — ordered, one-file-at-a-time, fail-fast tree deploy.
 - `ctmkit/promote/` — deploy-descriptor promotion / retrofit.
 - `ctmkit/cli/` — one Typer sub-app per surface; shared Rich output in `cli/_console.py`.
-- `ctmkit/docs/` — Cloudflare-clearing crawler (`curl_cffi`), content-only cleaner, and a
-  content-hash index (`.doc-index.json`) + `CHANGELOG.md` "what changed" report.
 
 ## Develop
 

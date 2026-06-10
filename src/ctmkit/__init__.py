@@ -1,8 +1,8 @@
-"""ctmkit — a Control-M library + CLI.
+"""ctmkit — a modular Control-M library + CLI for Jobs-as-Code GitOps.
 
-Phase 2 of the Control-M GitOps system. The first landed slice is the BMC docs
-mirror (``ctmkit.docs``); the deploy/promote/sitestd/policy/kpi/mcp modules
-follow per the design doc in the orchestration-manifests repo.
+Packages: ``aapi`` (Automation API services), ``deploy`` (ordered deploy),
+``promote`` (deploy-descriptor promotion), ``cli`` (surface/verb commands), plus
+``config``/``naming``/``schema``/``validate`` for manifests validation.
 """
 
 __version__ = "0.0.1"

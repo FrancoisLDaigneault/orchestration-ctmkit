@@ -1,0 +1,8 @@
+# Default owners for everything in this repo.
+* @orchestration-team
+
+# Surfaces with focused ownership
+/src/ctmkit/aapi/     @orchestration-team
+/src/ctmkit/cli/      @orchestration-team
+/src/ctmkit/docs/     @orchestration-team
+/.github/             @orchestration-team
