@@ -9,6 +9,7 @@ import typer
 
 from ctmkit.cli import (
     approval,
+    audit,
     build,
     deploy,
     docs,
@@ -29,3 +30,4 @@ app.add_typer(approval.app, name="approval")
 app.add_typer(events.app, name="events")
 app.add_typer(mcp.app, name="mcp")
 app.add_typer(docs.app, name="docs")
+app.add_typer(audit.app, name="audit")
